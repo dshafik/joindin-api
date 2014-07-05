@@ -107,6 +107,9 @@ class TalkCommentMapper extends ApiMapper {
                     $list[$key]['user_uri'] = $base . '/' . $version . '/users/' 
                         . $row['user_id'];
                 }
+                if ($row['email']) {
+                    $list[$key]['email_hash'] = md5(strtolower($row['email']));
+                }
             }
         }
         $retval = array();
