@@ -158,6 +158,21 @@ class UserMapper extends ApiMapper
                 $list[$key]['attended_events_uri'] = $base . '/' . $version . '/users/' 
                     . $row['ID'] . '/attended/';
                 $list[$key]['email_hash'] = md5(strtolower($row['email']));
+
+                if ($verbose) {
+                    // Get latest events attended, comments, and speaking
+                    $event_mapper = new EventMapper($this->_db, $this->_request);
+                    $events = $event_mapper->getEventsAttendedByUser($row['ID'], 5, 0, $this->_request, false);
+                    $list[$key]['events'] = $events['events'];
+
+                    $comment_mapper = new TalkCommentMapper($this->_db, $this->_request);
+                    $comments = $comment_mapper->getCommentsByUserId($row['ID'], 5, 0, true);
+                    $list[$key]['comments'] = $comments['comments'];
+
+                    $talk_mapper = new TalkMapper($this->_db, $this->_request);
+                    $talks = $talk_mapper->getTalksBySpeaker($row['ID'], 5, 0, true);
+                    $list[$key]['talks'] = $talks['talks'];
+                }
             }
         }
         $retval = array();
