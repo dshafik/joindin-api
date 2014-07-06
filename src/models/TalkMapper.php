@@ -94,6 +94,11 @@ class TalkMapper extends ApiMapper {
                 $list[$key]['starred_uri'] = $base . '/' . $version . '/talks/' . $row['ID'] . '/starred';
                 $list[$key]['verbose_comments_uri'] = $base . '/' . $version . '/talks/' . $row['ID'] . '/comments?verbose=yes';
                 $list[$key]['event_uri'] = $base . '/' . $version . '/events/' . $row['event_id'];
+                $list[$key]['event'] = array(
+                    'id' => $row['event_id'],
+                    'name' => $row['event_name'],
+                    'url_friendly_name' => $row['url_friendly_name']
+                );
             }
         }
 
@@ -252,7 +257,8 @@ class TalkMapper extends ApiMapper {
             . 'CASE
                 WHEN (((t.date_given - 3600*24) < '.mktime(0,0,0).') and (t.date_given + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
-               END as comments_enabled '
+               END as comments_enabled, '
+            . 'e.event_name, e.url_friendly_name '
             . 'from talks t '
             . 'inner join events e on e.ID = t.event_id '
             . 'inner join lang l on l.ID = t.lang '
