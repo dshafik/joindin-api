@@ -110,6 +110,19 @@ class TalkCommentMapper extends ApiMapper {
                 if ($row['email']) {
                     $list[$key]['email_hash'] = md5(strtolower($row['email']));
                 }
+
+                if ($verbose) {
+                    $list[$key]['talk'] = array(
+                        'id' => $row['talk_id'],
+                        'name' => $row['talk_title'],
+                        'url_friendly_talk_title' => $row['url_friendly_talk_title'],
+                        'event' => array(
+                            'id' => $row['event_id'],
+                            'name' => $row['event_name'],
+                            'url_friendly_name' => $row['url_friendly_name']
+                        )
+                    );
+                }
             }
         }
         $retval = array();
@@ -120,7 +133,8 @@ class TalkCommentMapper extends ApiMapper {
     }
 
     protected function getBasicSQL() {
-        $sql = 'select tc.*, user.email, user.full_name, t.talk_title, e.event_tz_cont, e.event_tz_place '
+        $sql = 'select tc.*, user.full_name, user.email, t.talk_title, e.event_tz_cont, e.event_tz_place, '
+            . 't.ID as talk_id, t.url_friendly_talk_title, e.event_name, e.ID as event_id, e.url_friendly_name '
             . 'from talk_comments tc '
             . 'inner join talks t on t.ID = tc.talk_id '
             . 'inner join events e on t.event_id = e.ID '
