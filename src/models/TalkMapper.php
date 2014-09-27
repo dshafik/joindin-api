@@ -183,7 +183,8 @@ class TalkMapper extends ApiMapper {
                 WHEN (((t.date_given - 3600*24) < '.mktime(0,0,0).') and (t.date_given + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
                END as comments_enabled, '
-            . 'c.cat_title as category '
+            . 'c.cat_title as category, '
+            . 'e.event_name, e.url_friendly_name '
             . 'from talks t '
             . 'inner join events e on e.ID = t.event_id '
             . 'inner join lang l on l.ID = t.lang '
